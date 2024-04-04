@@ -1,0 +1,219 @@
+
+#10 Create two constants (a b ), add them and print result in the output window
+a=2
+b=3
+c=a + b
+c
+
+
+#11 R is case sensitive. The following are not the same
+B=2
+b=2
+
+
+#20 list objects stored in memory
+
+ls()
+
+#30 Recall commands - use up and down buttons
+#31 Use history to write code
+
+#40 Clear  workspace 
+rm(a)
+rm(list=ls()) 
+
+
+
+#50 Read data
+Mydata <- read.table("http://people.wku.edu/alex.lebedinsky/metrics/table9-1.dat")
+#51 Read data with headers
+Mydata <- read.table("http://people.wku.edu/alex.lebedinsky/metrics/table9-1.dat", header=TRUE)
+#52 see help for read.table
+help("read.table")
+# Mydata is a dataframe
+
+
+
+#60 Other data objects
+
+#61 vector
+a <- c(1,2,3,4,5)
+a[2]
+mean(a)
+mean(Mydata) #does not work
+a[0]
+a <- numeric(10)
+a
+
+
+#62 Matrix 
+B = matrix( c(2, 4, 3, 1, 5, 7), nrow=3,  ncol=2) 
+B
+ones = matrix( 1, nrow=3,  ncol=2) 
+ones
+
+#63 transopse
+t(B)
+
+#64 string
+a<- "hello"
+b<-c(a, "there")
+b
+
+#65 factor 
+a <- factor(c("A","A","B","A","B","B","C","A","C"))
+
+#66 typeof and attributes
+typeof(a)
+attributes(a)
+
+#67 table
+results <- table(a)
+results
+typeof(results)
+attributes(results)
+str(results)
+
+
+#70
+#peek at the data
+head(Mydata)
+tail(Mydata)
+str(Mydata)
+
+#90 Read CSV data
+data2 <- read.csv("http://people.wku.edu/alex.lebedinsky/real_estate.csv", header=TRUE)
+head(data2)
+
+
+#100 Write data to CSV file
+write.csv( data2, "C:/econ507/test.csv")
+
+
+#120 Mean and sd of a variable  - how to refer to variables in a dataframe
+mean(Mydata$price)
+
+mean(Mydata[,1])
+
+sd(Mydata$price)
+
+variable="age"
+sd(Mydata[,variable])
+
+#125 The names function
+vars=names(Mydata)
+vars
+
+vars[2]
+sd(Mydata[,vars[2]])
+sd(Mydata[,"sqft"])
+
+
+#130 Select observations and variables 
+#using subset
+head(subset(Mydata, Mydata$Utown==1))
+head(subset(Mydata$price, Mydata$Utown==1))
+head(subset(Mydata,Utown==1 & Fplace==1 & sqft>=2000, select=c(price,sqft)))
+head(subset(Mydata,Utown==1 & Fplace==1 & sqft>=2000, select=-c(price,sqft)))
+
+#133 by indexing and using conditions 
+head(Mydata[c(1,5,100), c(1,2)])
+head(Mydata[90:100, -c(1,2)])
+head(Mydata[Mydata$price>200000, c(1,2)])
+
+#135 using sample function to pick a random sample 
+x=sample(nrow(Mydata),100,replace=FALSE)
+head(x)
+y=Mydata[x,]
+
+#140 Drop/keep variables
+Mydata2<-Mydata2            
+Mydata2$price <- NULL
+Mydata2 <-Mydata[c(-2,-3)]
+Mydata2 <-Mydata[,2:ncol(Mydata)]
+
+
+#150 Summary by variable
+by(Mydata$price, Mydata$Utown,mean)
+x<-aggregate(Mydata, by=list(Mydata$Pool, Mydata$Utown), FUN=mean)
+x
+
+#155 with psych package
+install.packages("psych")
+library(psych)
+describeBy(Mydata, Mydata$Utown) 
+by_stats=describeBy(Mydata, Mydata$Utown) 
+str(by_stats)
+
+
+#160 Getting stuff out of regression output
+lm(price ~ sqft + age + Utown + Fplace + Pool, data=Mydata)
+fit<-lm(price ~ sqft + age + Utown + Fplace + Pool, data=Mydata)
+summary(fit)
+coefficients(fit) # model coefficients
+fit$coefficients # or this way
+confint(fit, level=0.95) # CIs for model parameters 
+fitted(fit) # predicted values
+fit$fitted.values
+residuals(fit) # residuals
+fit$residuals
+str(fit)
+typeof(fit)
+attributes(fit)
+
+
+#170 R lists
+#  For more details, see <http://www.r-tutor.com/r-introduction/list>
+#   A list is a vector of objects. And you can really include almost anything into a list. 
+
+n = c(2, 3, 5) 
+s = c("aa", "bb", "cc", "dd", "ee") 
+b = matrix(c(TRUE, FALSE, TRUE, FALSE, FALSE,TRUE), ncol=2, nrow=3) 
+x = list(n, s, b, 3)   # x contains copies of n, s, b
+x
+str(x)
+
+#180 R list members are COPIES of the original objects: 
+
+n = c(10, 3, 5) # change one of the objects
+n
+x #display the original list
+
+#190 Referencing R lists
+x[1]
+
+#Double square bracket...
+x[[1]]
+
+#seem to look the same but...
+
+x[[1]]+1  #works
+x[1]+1  #does not work
+
+# try str() on x[1] and x[[1]] to see why.
+#See http://www.r-tutor.com/r-introduction/list/named-list-members 
+
+#200 Named Lists
+#You can name each member of the list:
+names(x) <- c("Alex", "Jacob", "Zach", "Ryan")
+x
+
+#And you can refer to the members by those names:
+
+x$Alex
+
+#210 Lists are everywhere...
+str(fit) # that's the regression we estimated above 
+fit$coefficients
+fit$coefficients[1]
+b<-fit$coefficients
+
+#215 Named things can be reffered to by ... name 
+b
+str(b)  # named numeric vector
+b["sqft"]
+b[2]
+
+
+
+
